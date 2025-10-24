@@ -4618,13 +4618,19 @@ async def start_socks_services(
                 })
                 continue
             
-            # Check if node has ping_ok or speed_ok status
-            if node.status not in ["ping_ok", "speed_ok"]:
+            # Check if node has ping_ok, speed_ok, ping_light or online status
+            # ping_light = порт открыт, можно попробовать запустить
+            # online = перезапуск (сначала останавливаем, потом запускаем)
+            if node.status == "online":
+                # Перезапуск: сначала остановить SOCKS
+                logger.info(f"🔄 Перезапуск SOCKS для онлайн узла {node_id}")
+                stop_socks_service(node_id)
+            elif node.status not in ["ping_ok", "speed_ok", "ping_light"]:
                 results.append({
                     "node_id": node_id,
                     "ip": node.ip,
                     "success": False,
-                    "message": f"Node must have ping_ok or speed_ok status (current: {node.status})"
+                    "message": f"Узел должен иметь статус PING OK, SPEED OK, PING LIGHT или ONLINE (текущий: {node.status})"
                 })
                 continue
             
