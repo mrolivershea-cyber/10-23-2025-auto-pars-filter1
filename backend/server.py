@@ -4667,6 +4667,7 @@ async def start_socks_services(
                 port=socks_port,
                 username=login_prefix,
                 password=password,
+                ppp_interface=node.ppp_interface,  # КРИТИЧНО для routing!
                 masking_config=masking_settings
             )
             
